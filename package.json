@@ -1,0 +1,41 @@
+{
+  "name": "koa-mw-joi",
+  "version": "0.0.1",
+  "description": "Koa middleware for Joi",
+  "main": "src/index.js",
+  "scripts": {
+    "travis": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/singhs020/koa-mw-joi.git"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "Koa",
+    "joi",
+    "middleware"
+  ],
+  "author": "Simranjeet Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/singhs020/koa-mw-joi/issues"
+  },
+  "homepage": "https://github.com/singhs020/koa-mw-joi#readme",
+  "dependencies": {
+    "pino": "^6.1.1",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "gulp": "^4.0.2",
+    "gulp-eslint": "^6.0.0",
+    "gulp-shell": "^0.8.0",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
+    "proxyquire": "^2.1.3",
+    "sinon": "^9.0.2"
+  }
+}
