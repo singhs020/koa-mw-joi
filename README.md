@@ -2,38 +2,33 @@
 
 Koa middleware for validation using Joi. It validates the body of the request using the schema provided while generating the middleware.
 
+If the body failed to pass the validation, it will throw a 400 Error with the details in it.
+
 ## How to use
 ```
 const Koa = require("koa");
-const getLogger = require("koa-mw-logger");
+const {getValidateBodyMw} = require("koa-mw-joi");
+const Router = require("@koa/router");
+const Joi = require(@hapi/joi);
 
 const app = Koa();
 
-app.use(getLogger());
-```
+const schema = Joi.object().keys({
+  "foo": Joi.string().required()
+});
 
-to use it in a handler
-```
-async function handler(ctx, next) {
-  const logger = ctx.logger;
-  logger.info({"message": "logging something"});
-}
-```
+const router = new Router();
 
-## Config
-There is an option to pass in the config as per the following structure to define some properties of logger.
+router.post("/", getValidateBodyMw(schema), (ctx, next) => {
+  // your handler logic here
+});
 
-```
-const Koa = require("koa");
-const getLogger = require("koa-mw-logger");
+app.use(getValidateBodyMw());
 
-const config = {
-  "name": "test"
-};
 
-const app = Koa();
-
-app.use(getLogger(config));
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
 ```
 
 ## Support or Contact
