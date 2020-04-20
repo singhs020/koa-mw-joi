@@ -1,8 +1,18 @@
-function getMiddleware(ctx, next) {
-  ctx.status = 405;
-  ctx.message = "In Progress";
+function getMiddleware(schema) {
 
-  return next();
+  return async (ctx, next) => {
+    try {
+      await schema.validateAsync(ctx.request.body);
+    } catch (error) {
+      ctx.status = 400;
+      ctx.body = {
+        "message": "Bad Request",
+        "error": error.details.map((item) => item.message)
+      };
+      return;
+    }
+    await next();
+  };
 }
 
 module.exports = getMiddleware;
