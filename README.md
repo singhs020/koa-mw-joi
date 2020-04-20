@@ -25,9 +25,6 @@ router.post("/", getValidateBodyMw(schema), (ctx, next) => {
   // your handler logic here
 });
 
-app.use(getValidateBodyMw());
-
-
 app
   .use(router.routes())
   .use(router.allowedMethods());
