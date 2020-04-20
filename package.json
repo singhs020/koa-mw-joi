@@ -1,6 +1,6 @@
 {
   "name": "koa-mw-joi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Koa middleware for Joi",
   "main": "src/index.js",
   "scripts": {
