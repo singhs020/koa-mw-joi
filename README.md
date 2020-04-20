@@ -1,5 +1,7 @@
 # koa-mw-joi [Work in progress]
 
+[![NPM](https://nodei.co/npm/koa-mw-joi.png?downloads=true)](https://www.npmjs.com/package/koa-mw-joi/)
+
 Koa middleware for validation using Joi. It validates the body of the request using the schema provided while generating the middleware.
 
 If the body failed to pass the validation, it will throw a 400 Error with the details in it.
