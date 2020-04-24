@@ -31,4 +31,4 @@ app
 ```
 
 ## Support or Contact
-Having trouble with koa-mw-logger or have any questions? Please raise an issue.
+Having trouble with koa-mw-joi or have any questions? Please raise an issue.
