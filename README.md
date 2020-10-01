@@ -1,4 +1,4 @@
-# koa-mw-joi [Work in progress]
+# koa-mw-joi
 
 [![NPM](https://nodei.co/npm/koa-mw-joi.png?downloads=true)](https://www.npmjs.com/package/koa-mw-joi/)
 
