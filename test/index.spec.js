@@ -1,5 +1,5 @@
 const {expect} = require("chai");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 const {getValidateBodyMw} = require("../src");
 

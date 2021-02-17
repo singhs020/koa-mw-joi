@@ -1,5 +1,5 @@
 const assert = require("assert");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 function getMiddleware(schema) {
   assert(schema && (Joi.isSchema(schema) === true), "A Joi schema is required to use the middleware.");
