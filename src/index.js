@@ -8,6 +8,12 @@ function getValidateBodyMw(schema) {
   return createMw(schema);
 }
 
+function getValidateQuertMw(schema) {
+  assert(schema && (Joi.isSchema(schema) === true), "The joi schema is required.");
+  return createMw(schema, true);
+}
+
 module.exports = {
-  getValidateBodyMw
+  getValidateBodyMw,
+  getValidateQuertMw
 };
