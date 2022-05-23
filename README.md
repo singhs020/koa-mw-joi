@@ -30,5 +30,22 @@ app
   .use(router.allowedMethods());
 ```
 
+## Functions Available
+- getValidateBodyMw
+- getValidateQueryMw
+- getValidateParamsMw
+- getValidateAllMw
+
+### getValidateAllMw
+this will generate an object for validation in following format
+
+```
+const data = {
+  query: {},
+  body: {},
+  params: {}
+}
+```
+
 ## Support or Contact
 Having trouble with koa-mw-joi or have any questions? Please raise an issue.
