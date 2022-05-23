@@ -2,13 +2,20 @@ const { expect } = require("chai");
 const Joi = require("joi");
 const { stub } = require("sinon");
 
-const getMiddleware = require("../src/middleware");
+const {getMiddleware, ValidationType} = require("../src/middleware");
 
 const schema = Joi.object().keys({
   "foo": Joi.string()
 });
+const allSchema = Joi.object().keys({
+  query: schema,
+  body: schema,
+  params: schema
+});
 const validator = getMiddleware(schema);
-const queryValidator = getMiddleware(schema, true);
+const queryValidator = getMiddleware(schema, ValidationType.query);
+const paramsValidator = getMiddleware(schema, ValidationType.params);
+const allValidator = getMiddleware(allSchema, ValidationType.all);
 
 const body = {
   "foo": "bar"
@@ -20,7 +27,8 @@ const invalidBody = {
 const ctx = {
   "status": 0,
   "body": "",
-  "query": body
+  "query": body,
+  "params": body
 };
 ctx.request = { body };
 const next = stub().resolves();
@@ -73,6 +81,29 @@ describe("The middleware", () => {
       });
     });
 
+    describe("and the params are invalid", () => {
+      before(() => {
+        ctx.params = invalidBody;
+      });
+
+      after(() => {
+        ctx.params = body;
+        ctx.body = "";
+        ctx.status = 0;
+      });
+
+      it("should return a response with 400 status code", async () => {
+        await paramsValidator(ctx, next);
+        expect(ctx.body).to.deep.equal({
+          "error": [
+            "\"foo\" must be a string"
+          ],
+          "message": "Bad Request"
+        });
+        expect(ctx.status).to.equal(400);
+      });
+    });
+
     describe("and the request body is valid", () => {
 
       after(() => {
@@ -80,7 +111,7 @@ describe("The middleware", () => {
         ctx.status = 0;
       });
 
-      it("should not return a response with 400 status code", async () => {
+      it("should not return approriate response", async () => {
         await validator(ctx, next);
         expect(ctx.body).to.equal("");
         expect(ctx.status).to.equal(0);
@@ -88,14 +119,26 @@ describe("The middleware", () => {
     });
 
     describe("and the query is valid", () => {
-
       after(() => {
         ctx.body = "";
         ctx.status = 0;
       });
 
-      it("should not return a response with 400 status code", async () => {
+      it("should not return appropriate response", async () => {
         await queryValidator(ctx, next);
+        expect(ctx.body).to.equal("");
+        expect(ctx.status).to.equal(0);
+      });
+    });
+
+    describe("when everything needs a validation", () => {
+      after(() => {
+        ctx.body = "";
+        ctx.status = 0;
+      });
+
+      it("should return appropriate response", async () => {
+        await allValidator(ctx, next);
         expect(ctx.body).to.equal("");
         expect(ctx.status).to.equal(0);
       });
