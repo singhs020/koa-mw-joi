@@ -1,4 +1,7 @@
-const Joi = require("joi");
+import { Middleware } from "koa";
 
-export function getValidateBodyMw(schema: Joi) : any;
-export function getValidateQueryMw(schema: Joi) : any;
+import Joi from "joi";
+
+export function getValidateBodyMw(schema: typeof Joi) : Middleware;
+export function getValidateQueryMw(schema: typeof Joi) : Middleware;
+export { Joi };

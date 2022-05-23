@@ -15,5 +15,6 @@ function getValidateQueryMw(schema) {
 
 module.exports = {
   getValidateBodyMw,
-  getValidateQueryMw
+  getValidateQueryMw,
+  Joi
 };
