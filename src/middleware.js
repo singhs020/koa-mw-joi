@@ -26,11 +26,18 @@ function getMiddleware({
       } else if (validationType === ValidationType.params) {
         data = ctx.params;
       } else if (validationType === ValidationType.all) {
-        data = {
-          query: ctx.query,
-          params: ctx.params,
-          body: ctx.request.body,
-        };
+        data = {};
+        if (ctx.query && Object.keys(ctx.query).length > 0) {
+          data.query = ctx.query;
+        }
+
+        if (ctx.params && Object.keys(ctx.params).length > 0) {
+          data.params = ctx.params;
+        }
+
+        if (ctx.body && Object.keys(ctx.body).length > 0) {
+          data.body = ctx.body;
+        }
       }
       const value = await schema.validateAsync(data, options);
       ctx.validatedInfo = {

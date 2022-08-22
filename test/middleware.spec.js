@@ -12,6 +12,10 @@ const allSchema = Joi.object().keys({
   body: schema,
   params: schema,
 });
+const allSchemaWithoutQuery = Joi.object().keys({
+  body: schema,
+  params: schema,
+});
 const validator = getMiddleware({ schema });
 const queryValidator = getMiddleware({
   schema,
@@ -23,6 +27,10 @@ const paramsValidator = getMiddleware({
 });
 const allValidator = getMiddleware({
   schema: allSchema,
+  validationType: ValidationType.all,
+});
+const allValidatorWithoutQuery = getMiddleware({
+  schema: allSchemaWithoutQuery,
   validationType: ValidationType.all,
 });
 const optionsValidator = getMiddleware({ schema, options: {stripUnknown: true} });
@@ -146,6 +154,24 @@ describe("The middleware", () => {
 
       it("should return appropriate response", async () => {
         await allValidator(ctx, next);
+        expect(ctx.body).to.equal("");
+        expect(ctx.status).to.equal(0);
+      });
+    });
+
+    describe("using all validator without query", () => {
+      before(() => {
+        ctx.query = {};
+      });
+
+      after(() => {
+        ctx.body = "";
+        ctx.status = 0;
+        ctx.query= body;
+      });
+
+      it("should return appropriate response", async () => {
+        await allValidatorWithoutQuery(ctx, next);
         expect(ctx.body).to.equal("");
         expect(ctx.status).to.equal(0);
       });
