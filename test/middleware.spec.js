@@ -2,33 +2,55 @@ const { expect } = require("chai");
 const Joi = require("joi");
 const { stub } = require("sinon");
 
-const {getMiddleware, ValidationType} = require("../src/middleware");
+const { getMiddleware, ValidationType } = require("../src/middleware");
 
 const schema = Joi.object().keys({
-  "foo": Joi.string()
+  foo: Joi.string(),
 });
 const allSchema = Joi.object().keys({
   query: schema,
   body: schema,
-  params: schema
+  params: schema,
 });
-const validator = getMiddleware(schema);
-const queryValidator = getMiddleware(schema, ValidationType.query);
-const paramsValidator = getMiddleware(schema, ValidationType.params);
-const allValidator = getMiddleware(allSchema, ValidationType.all);
+const allSchemaWithoutQuery = Joi.object().keys({
+  body: schema,
+  params: schema,
+});
+const validator = getMiddleware({ schema });
+const queryValidator = getMiddleware({
+  schema,
+  validationType: ValidationType.query,
+});
+const paramsValidator = getMiddleware({
+  schema,
+  validationType: ValidationType.params,
+});
+const allValidator = getMiddleware({
+  schema: allSchema,
+  validationType: ValidationType.all,
+});
+const allValidatorWithoutQuery = getMiddleware({
+  schema: allSchemaWithoutQuery,
+  validationType: ValidationType.all,
+});
+const optionsValidator = getMiddleware({ schema, options: {stripUnknown: true} });
 
 const body = {
-  "foo": "bar"
+  foo: "bar",
 };
 const invalidBody = {
-  "foo": 1
+  foo: 1,
+};
+const optionsBody = {
+  foo: "bar",
+  test: "bar"
 };
 
 const ctx = {
-  "status": 0,
-  "body": "",
-  "query": body,
-  "params": body
+  status: 0,
+  body: "",
+  query: body,
+  params: body,
 };
 ctx.request = { body };
 const next = stub().resolves();
@@ -49,10 +71,8 @@ describe("The middleware", () => {
       it("should return a response with 400 status code", async () => {
         await validator(ctx, next);
         expect(ctx.body).to.deep.equal({
-          "error": [
-            "\"foo\" must be a string"
-          ],
-          "message": "Bad Request"
+          error: ['"foo" must be a string'],
+          message: "Bad Request",
         });
         expect(ctx.status).to.equal(400);
       });
@@ -72,10 +92,8 @@ describe("The middleware", () => {
       it("should return a response with 400 status code", async () => {
         await queryValidator(ctx, next);
         expect(ctx.body).to.deep.equal({
-          "error": [
-            "\"foo\" must be a string"
-          ],
-          "message": "Bad Request"
+          error: ['"foo" must be a string'],
+          message: "Bad Request",
         });
         expect(ctx.status).to.equal(400);
       });
@@ -95,17 +113,14 @@ describe("The middleware", () => {
       it("should return a response with 400 status code", async () => {
         await paramsValidator(ctx, next);
         expect(ctx.body).to.deep.equal({
-          "error": [
-            "\"foo\" must be a string"
-          ],
-          "message": "Bad Request"
+          error: ['"foo" must be a string'],
+          message: "Bad Request",
         });
         expect(ctx.status).to.equal(400);
       });
     });
 
     describe("and the request body is valid", () => {
-
       after(() => {
         ctx.body = "";
         ctx.status = 0;
@@ -143,11 +158,50 @@ describe("The middleware", () => {
         expect(ctx.status).to.equal(0);
       });
     });
+
+    describe("using all validator without query", () => {
+      before(() => {
+        ctx.query = {};
+      });
+
+      after(() => {
+        ctx.body = "";
+        ctx.status = 0;
+        ctx.query= body;
+      });
+
+      it("should return appropriate response", async () => {
+        await allValidatorWithoutQuery(ctx, next);
+        expect(ctx.body).to.equal("");
+        expect(ctx.status).to.equal(0);
+      });
+    });
+
+    describe("when options are passed", () => {
+      before(() => {
+        ctx.request.body = optionsBody;
+      });
+
+      after(() => {
+        ctx.body = "";
+        ctx.status = 0;
+        ctx.request.body = body;
+      });
+
+      it("should return appropriate response", async () => {
+        await optionsValidator(ctx, next);
+        expect(ctx.body).to.equal("");
+        expect(ctx.status).to.equal(0);
+        expect(ctx.validatedInfo.body).to.deep.equal(body);
+      });
+    });
   });
 
   describe("when schema is not passed", () => {
     it("should throw an error", () => {
-      expect(() => getMiddleware()).to.throw("A Joi schema is required to use the middleware.");
+      expect(() => getMiddleware()).to.throw(
+        "A Joi schema is required to use the middleware."
+      );
     });
   });
 });

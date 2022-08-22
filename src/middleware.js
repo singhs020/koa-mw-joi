@@ -8,7 +8,11 @@ const ValidationType = {
   all: "all",
 };
 
-function getMiddleware(schema, validationType = ValidationType.body) {
+function getMiddleware({
+  schema,
+  validationType = ValidationType.body,
+  options = {},
+} = {}) {
   assert(
     schema && Joi.isSchema(schema) === true,
     "A Joi schema is required to use the middleware."
@@ -22,13 +26,23 @@ function getMiddleware(schema, validationType = ValidationType.body) {
       } else if (validationType === ValidationType.params) {
         data = ctx.params;
       } else if (validationType === ValidationType.all) {
-        data = {
-          query: ctx.query,
-          params: ctx.params,
-          body: ctx.request.body,
-        };
+        data = {};
+        if (ctx.query && Object.keys(ctx.query).length > 0) {
+          data.query = ctx.query;
+        }
+
+        if (ctx.params && Object.keys(ctx.params).length > 0) {
+          data.params = ctx.params;
+        }
+
+        if (ctx.body && Object.keys(ctx.body).length > 0) {
+          data.body = ctx.body;
+        }
       }
-      await schema.validateAsync(data);
+      const value = await schema.validateAsync(data, options);
+      ctx.validatedInfo = {
+        [validationType]: value
+      };
     } catch (error) {
       ctx.status = 400;
       ctx.body = {

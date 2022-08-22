@@ -1,26 +1,50 @@
 const assert = require("assert");
 const Joi = require("joi");
 
-const {getMiddleware, ValidationType} = require("./middleware");
+const { getMiddleware, ValidationType } = require("./middleware");
 
-function getValidateBodyMw(schema) {
-  assert(schema && (Joi.isSchema(schema) === true), "The joi schema is required.");
-  return getMiddleware(schema);
+function getValidateBodyMw(schema, options = {}) {
+  assert(
+    schema && Joi.isSchema(schema) === true,
+    "The joi schema is required."
+  );
+  return getMiddleware({ schema, options });
 }
 
-function getValidateQueryMw(schema) {
-  assert(schema && (Joi.isSchema(schema) === true), "The joi schema is required.");
-  return getMiddleware(schema, ValidationType.query);
+function getValidateQueryMw(schema, options = {}) {
+  assert(
+    schema && Joi.isSchema(schema) === true,
+    "The joi schema is required."
+  );
+  return getMiddleware({
+    schema,
+    validationType: ValidationType.query,
+    options,
+  });
 }
 
-function getValidateParamsMw(schema) {
-  assert(schema && (Joi.isSchema(schema) === true), "The joi schema is required.");
-  return getMiddleware(schema, ValidationType.params);
+function getValidateParamsMw(schema, options = {}) {
+  assert(
+    schema && Joi.isSchema(schema) === true,
+    "The joi schema is required."
+  );
+  return getMiddleware({
+    schema,
+    validationType: ValidationType.params,
+    options,
+  });
 }
 
-function getValidateAllMw(schema) {
-  assert(schema && (Joi.isSchema(schema) === true), "The joi schema is required.");
-  return getMiddleware(schema, ValidationType.all);
+function getValidateAllMw(schema, options = {}) {
+  assert(
+    schema && Joi.isSchema(schema) === true,
+    "The joi schema is required."
+  );
+  return getMiddleware({
+    schema,
+    validationType: ValidationType.all,
+    options,
+  });
 }
 
 module.exports = {
@@ -28,5 +52,5 @@ module.exports = {
   getValidateQueryMw,
   getValidateParamsMw,
   getValidateAllMw,
-  Joi
+  Joi,
 };
