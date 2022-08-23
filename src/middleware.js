@@ -35,8 +35,8 @@ function getMiddleware({
           data.params = ctx.params;
         }
 
-        if (ctx.body && Object.keys(ctx.body).length > 0) {
-          data.body = ctx.body;
+        if (ctx.request.body && Object.keys(ctx.request.body).length > 0) {
+          data.body = ctx.request.body;
         }
       }
       const value = await schema.validateAsync(data, options);
