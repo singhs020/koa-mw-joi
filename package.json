@@ -26,9 +26,6 @@
     "url": "https://github.com/singhs020/koa-mw-joi/issues"
   },
   "homepage": "https://github.com/singhs020/koa-mw-joi#readme",
-  "peerDependencies": {
-    "koa": "^2.13.4"
-  },
   "dependencies": {
     "joi": "^18.0.1",
     "pino": "^10.1.0",
