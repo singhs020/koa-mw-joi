@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/singhs020/koa-mw-joi#readme",
   "dependencies": {
-    "joi": "^18.0.1",
+    "joi": "^18.0.2",
     "pino": "^10.1.0",
     "uuid": "^13.0.0"
   },
